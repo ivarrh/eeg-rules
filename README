@@ -1,0 +1,16 @@
+
+1. Generar audios 
+- marcadores verbo/conflicto?
+
+2. Separar texto, propósito, action (orden fijo)
+- duración constante
+
+EEG + Mouse-tracking (within-subjects)
+
+3. Programar EEG en Psychtoolbox
+- 8 reglas y 12 conductas
+- solicitar template de Paco
+
+4. Mouse y tareas extra en JsPsych 
+- Stroop emocional
+- Digit span
