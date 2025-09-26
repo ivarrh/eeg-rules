@@ -1,17 +1,19 @@
+1. Generar audios (carpeta audio)
 
-1. Generar audios 
 - marcadores verbo/conflicto?
 
 2. Separar texto, propósito, action (orden fijo)
+
 - duración constante
 
-EEG + Mouse-tracking (within-subjects)
+EEG + Mouse-tracking + Emotional Stroop + Digit Span (within-subjects)
 
 3. Programar EEG en Psychtoolbox
-- 8 reglas y 12 conductas
+
 - solicitar template de Paco
 
-4. Mouse y tareas extra en JsPsych 
+1. Mouse y tareas extra en JsPsych
+
 - Stroop emocional
 - Digit span
 
@@ -20,10 +22,12 @@ EEG + Mouse-tracking (within-subjects)
 Protocolo del experimento de interpretación de normas y reglas
 
 1. Introducción
+
    - Presentación inicial.
    - Instrucciones generales de la tarea.
 
 2. Fase de Training (práctica)
+
    - Bloque de práctica:
      1. Presentación de 1 norma.
      2. Presentación de 2 situaciones de prueba (ejemplo: "11" o "00").
@@ -43,4 +47,4 @@ Protocolo del experimento de interpretación de normas y reglas
         - Si no lo comprende, se repite hasta que quede claro.
      3. Ensayos del bloque:
         - Presentación de 12 situaciones (una a una).
-        - El participante decide en cada una si cumplen o incumplen la norma. 
+        - El participante decide en cada una si cumplen o incumplen la norma.
