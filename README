@@ -14,3 +14,33 @@ EEG + Mouse-tracking (within-subjects)
 4. Mouse y tareas extra en JsPsych 
 - Stroop emocional
 - Digit span
+
+25/09/2025
+
+Protocolo del experimento de interpretación de normas y reglas
+
+1. Introducción
+   - Presentación inicial.
+   - Instrucciones generales de la tarea.
+
+2. Fase de Training (práctica)
+   - Bloque de práctica:
+     1. Presentación de 1 norma.
+     2. Presentación de 2 situaciones de prueba (ejemplo: "11" o "00").
+        - El participante decide si cumplen o incumplen la norma.
+     3. Objetivo: comprobar que entiende la dinámica de la tarea.
+
+3. Fase Experimental
+   - Estructura: 8 bloques.
+   - Cada bloque incluye:
+     1. Presentación de la regla/norma:
+        - Origen de la norma.
+        - Texto de la norma.
+        - Propósito de la norma.
+        - Posibilidad de solicitar repetición de la información.
+     2. Verificación de comprensión:
+        - Se pregunta al participante sobre el texto y el propósito.
+        - Si no lo comprende, se repite hasta que quede claro.
+     3. Ensayos del bloque:
+        - Presentación de 12 situaciones (una a una).
+        - El participante decide en cada una si cumplen o incumplen la norma. 
