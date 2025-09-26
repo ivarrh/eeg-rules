@@ -38,15 +38,21 @@ try
     %% ----------------------
     % Trial setup
     % -----------------------
-    audioFolder = fullfile(pwd, 'audio'); % your audio folder
+    audioFolder = fullfile(pwd, 'audio_test'); % your audio folder
     files = dir(fullfile(audioFolder, '*.wav')); % assumes .wav files
     nTrials = length(files);
     files = files(randperm(nTrials)); % randomize order
 
+    blocks = {'authorisation','cars','dogs','drinking','phone', 'shoes', 'shoot', 'sleep'};
+    shuffledBlocks = blocks(randperm(length(blocks)));
+
     trials = struct();
     for t = 1:nTrials
         trials(t).filename = fullfile(audioFolder, files(t).name);
-        trials(t).onset    = NaN;
+        trials(t).onset   = NaN;
+        trials(t).scenario   = NaN;
+        trials(t).condition  = NaN;       % 'over'
+        trials(t).item = NaN;  
         trials(t).rt       = NaN;
         trials(t).response = NaN;
     end
@@ -54,13 +60,13 @@ try
     %% ----------------------
     % Instructions
     % -----------------------
-    DrawFormattedText(win, 'Bienvenido!\n\nEn cada ensayo escucharás un audio.\n\nDespués responde a la pregunta.\n\nPulsa cualquier tecla para continuar.', ...
+    DrawFormattedText(win, 'Bienvenido!\n\nEn cada ensayo escucharás un audio.\n\nDespués responde a la pregunta.\n\nPulsa cualquier tecla para más instrucciones.', ...
         'center', 'center', white, 70);
     Screen('Flip', win);
     KbStrokeWait;
 
     % Ready screen
-    DrawFormattedText(win, '¿Estás listo?\n\nPulsa la barra espaciadora para comenzar.', ...
+    DrawFormattedText(win, '¿Estás listo?\n\nPulsa la barra de espacio para empezar.', ...
         'center', 'center', white);
     Screen('Flip', win);
     % Wait specifically for space bar
@@ -78,6 +84,7 @@ try
     %% ----------------------
     % Trial loop
     % -----------------------
+
     for t = 1:nTrials
         % Load audio file
         [y, fs] = audioread(trials(t).filename);  % y = samples x channels
@@ -87,19 +94,25 @@ try
             y = y';         % transpose for stereo already
         end
         
+        %  Clear screen (gray) before audio
+        Screen('FillRect', win, grey); % gray background
+        DrawFormattedText(win, '...', 'center', 'center', white);
+        Screen('Flip', win);
+
         % Open PsychPortAudio with correct sampling rate
         pahandle = PsychPortAudio('Open', [], [], 0, fs, size(y,1));
-
+        
         % Playback
         PsychPortAudio('FillBuffer', pahandle, y);
-        PsychPortAudio('Start', pahandle, 1, 0, 1);
-        % trials(t).onset = startTime;
+        startTime = PsychPortAudio('Start', pahandle, 1, 0, 1);
+        trials(t).onset = startTime;
 
-        % Wait until finished
-        WaitSecs(length(y)/freq + 0.1);
+        PsychPortAudio('Stop', pahandle, 1); % wait for playback to finish
+        % Close audio handle
+        PsychPortAudio('Close', pahandle);
 
         % Prompt
-        DrawFormattedText(win, '¿Esta persona incumplió la norma?\n\nE = Sí     I = No\n\n(ESC para salir)', ...
+        DrawFormattedText(win, '¿Esta persona incumplió la regla?\n\nE = Sí     I = No\n\n(ESC para salir)', ...
             'center', 'center', white, 70);
         Screen('Flip', win);
 
@@ -129,15 +142,33 @@ try
         trials(t).response = resp;
         trials(t).rt = rt;
 
+        DrawFormattedText(win, 'Respuesta registrada', 'center', 'center', white);
+        Screen('Flip', win);
+
+        [~, name, ~] = fileparts(trials(t).filename); % get 'subject01_trial05_conditionA'
+        % Split by underscore
+        parts = split(name, '_'); 
+
+        trials(t).scenario   = parts{1};       % 'train'
+        trials(t).condition  = parts{2};       % 'over'
+        trials(t).item = parts{3};       % '3'
+
         % Save after each trial
         save(outfile_mat, 'trials', 'subjID');
 
         % Save/update CSV
         fid = fopen(outfile_csv, 'w');
-        fprintf(fid, 'trial,filename,onset,response,rt\n');
+        fprintf(fid, 'trial,filename,onset,scenario,condition,item,response,rt\n');
         for k = 1:t
-            fprintf(fid, '%d,%s,%.6f,%s,%.4f\n', k, trials(k).filename, ...
-                trials(k).onset, string(trials(k).response), trials(k).rt);
+            fprintf(fid, '%d,%s,%.6f,%s,%s,%s,%s,%.4f\n', ...
+            k, ...                             % trial number
+            trials(k).filename, ...            % full filename
+            trials(k).onset, ...               % numeric onset
+            trials(k).scenario, ...            % parsed field
+            trials(k).condition, ...           % parsed field
+            trials(k).item, ...                % parsed field
+            string(trials(k).response), ...    % SI/NO
+            trials(k).rt);                     % numeric RT
         end
         fclose(fid);
 
@@ -153,7 +184,6 @@ try
     KbStrokeWait;
 
     % Cleanup
-    PsychPortAudio('Close', pahandle);
     Priority(0);
     ShowCursor;
     Screen('CloseAll');
